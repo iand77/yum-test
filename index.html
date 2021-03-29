@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <!-- Javascript file containing Grid component -->
+        <script type="text/javascript" src="js/main.js"></script>
+        <!-- HTML5 CSS reset -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+        <!-- Code containing Grid comoponent -->
+        <link rel="stylesheet" href="styles/css/main.css">
+
+    </head>
+    <body>
+        <div class="form">
+
+            <p>
+                Drag slider to change grid size. Use colour pickers to change colours.
+            </p>
+
+            <!-- Grid container -->
+            <div class="form__container"></div>
+
+            <!-- Size slider -->
+            <div class="form__size">
+                <label>Select size: <span class="form__size__label_value">x</span></label><br>
+                <span class="form__size__label_min">x</span>
+                <input class="form__size__input" type="range" min="1" max="100" value="50">
+                <span class="form__size__label_max">x</span>
+            </div>
+
+            <!-- Colour picker section -->
+            <div class="form__colour">
+                <label>Colours:</label><br>
+
+                <!-- Box colour -->
+                <div class="form__colour_box">
+                    <label>Box</label>
+                    <input class="form__colour__box__input" name="box" type="color" value="#5f90C4">
+                </div>
+
+                <!-- Hover colour -->
+                <div class="form__colour_hover">
+                    <label>Hover</label>
+                    <input class="form__colour__hover__input" name="hover" type="color" value="#6951E1">
+                </div>
+                
+                <!-- Backgroud colour -->
+                <div class="form__colour_bg">
+                    <label>Background</label>
+                    <input class="form__colour__bg__input" name="background" type="color" value="#BBBBBB">
+                </div>
+            </div>
+
+        </div>
+
+        <script type="text/javascript">
+
+                var 
+                    form            = document.querySelector('.form'),
+                    gridContainer   = document.querySelector('.form__container'),
+
+                    // Size slider input and labels
+                    sizeSlider      = document.querySelector('.form__size__input'),
+                    sizeLabelValue  = document.querySelector('.form__size__label_value'),
+                    sizeLabelMin    = document.querySelector('.form__size__label_min'),
+                    sizeLabelMax    = document.querySelector('.form__size__label_max'),
+
+                    // Colour selectors
+                    colorBackground = document.querySelector('.form__colour__bg__input'),
+                    colorBox        = document.querySelector('.form__colour__box__input'),
+                    colorHover      = document.querySelector('.form__colour__hover__input'),
+                    colorPickers    = document.querySelectorAll('input[type="color"]'),
+
+                    // Grid component
+                    gridObject;
+
+                /**
+                 * Function to render grid in `gridContainer`
+                 * 
+                 * @param {int} size Size of square grid
+                 */
+                function renderGrid(size) {
+
+                    gridObject = new Grid({ 
+                        id:         'gridYUM',
+                        width:      size,
+                        height:     size,
+                        container:  gridContainer,
+                        color: {
+                            background: colorBackground.value,
+                            hover:      colorHover.value,
+                            box:        colorBox.value
+                        }
+                    });
+                    
+                    sizeLabelValue.innerText = size + 'x' + size;
+                    gridObject.render();
+                }
+
+                /**
+                 * Function to set up event handlers
+                 */
+                function setupForm() {
+                    
+                    // Add input invent handler to slider
+                    sizeSlider.addEventListener('input', function() {
+
+                        renderGrid(this.value);
+
+                    });
+
+                    // Add input event handler to colour pickers
+                    colorPickers = Array.prototype.slice.call(colorPickers, 0);
+                    colorPickers.forEach(function(colorPicker) {
+                        colorPicker.addEventListener('input', function() {
+
+                            gridObject.settings.color[this.name] = this.value;
+                            gridObject.refresh();
+
+                        });
+                    });
+                }
+
+                /**
+                 * Function to make sure grid resizes correctly 
+                 */
+                function resize() {
+
+                    var
+                        // Get window inner width size (cross browser)
+                        innerWidth      = window.innerWidth || 
+                                          document.documentElement.clientWidth || 
+                                          document.body.clientWidth,
+
+                        // Calculate grid width based on current window width
+                        gridWidth       = (innerWidth > 720 ? 720: innerWidth) - 100,
+
+                        // Minimum block size in pixels
+                        blockSizeMin    = 25,
+                        // Maximum block size in pixels
+                        blockSizeMax    = 200,
+                        // How many big blocks can fit in container
+                        blockCountMax   = Math.floor(gridWidth / blockSizeMin),
+                        // How many small blocks can fit in container
+                        blockCountMin   = Math.ceil(gridWidth / blockSizeMax);
+
+                    gridContainer.style.width = gridWidth + 'px';
+                    gridContainer.style.height = gridWidth + 'px';
+
+                    sizeSlider.setAttribute('min', blockCountMin);
+                    sizeSlider.setAttribute('max', blockCountMax);
+                    sizeSlider.value = blockCountMin;
+
+                    sizeLabelMin.innerText = blockCountMin;
+                    sizeLabelMax.innerText = blockCountMax;
+                    sizeLabelValue.innerText = blockCountMin;
+
+                    renderGrid(blockCountMin);
+                }
+
+                window.onresize = resize;
+
+                // Add event handlers to input controls
+                setupForm();
+                
+                // Render the grid depending on current window size
+                resize();
+        
+            </script>
+    </body>
+
+</html>
