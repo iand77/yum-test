@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
+
+/* Colours */
+$colorLightGray:    #BBBBBB; 
+$colorControlBlue:  #0075F2;
+
+/* Fonts */
+@mixin fontMain {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 1em;
+}
+
+@mixin fontLabel {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 0.9em;
+}
+
+/* Styling */
+body {
+    @include fontMain;
+    background-color: #FFEAEE;
+    margin: 50px;
+}
+
+p {
+    line-height: 1.3em;
+}
+
+.form {
+
+    text-align: center;
+
+    label {
+        @include fontLabel;
+        display: block;
+    }
+
+    & > div {
+        max-width: 620px;
+    }
+
+    &__container,
+    &__size {
+        margin: 0px auto 15px;
+    }
+
+    &__size {
+        text-align: center;
+        padding: 10px;
+
+        &__input {
+            
+            -webkit-appearance: none;
+            width: calc(100% - 50px);
+            height: 15px;
+            border-radius: 5px;  
+            background: $colorLightGray;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            
+            &::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%; 
+                background: $colorControlBlue;
+                cursor: pointer;
+              }
+              
+            &::-moz-range-thumb {
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                background: $colorControlBlue;
+                cursor: pointer;
+            }
+        }
+    }
+
+    &__colour {
+        margin: auto;
+
+        & > div {
+            width: 33%;
+            float: left;
+            text-align: center;
+            
+
+            & > input {
+                height: 50px;
+                width: 50px;
+                border: 0px;
+                cursor: pointer;
+            }
+        }
+
+        &:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    }
+}
